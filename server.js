@@ -231,6 +231,30 @@ app.delete('/api/vault/:id', requireAuth, (req, res) => {
   );
 });
 
+// ==========================================
+// ADMIN USER DIRECTORY ENDPOINT
+// ==========================================
+app.get('/api/admin/users', requireAuth, (req, res) => {
+  const query = `
+    SELECT 
+      users.id, 
+      users.fullName, 
+      users.email, 
+      users.salt, 
+      users.passwordHash,
+      COUNT(vault.id) AS vaultCount
+    FROM users 
+    LEFT JOIN vault ON users.email = vault.userEmail
+    GROUP BY users.id
+    ORDER BY users.id ASC
+  `;
+
+  db.all(query, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch user telemetry.' });
+    res.json({ users: rows });
+  });
+});
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`Vaultify Capstone running with SQLite at http://localhost:${PORT}`);

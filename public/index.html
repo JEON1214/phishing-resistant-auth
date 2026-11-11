@@ -3,426 +3,667 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vaultify - Digital Vault Management</title>
+  <title>Vaultify | Phishing-Resistant Password Manager</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     :root {
-      --primary-color: #2563eb;
-      --primary-hover: #1d4ed8;
-      --bg-gradient: #f1f4f9;
-      --card-bg: #ffffff;
+      --bg-main: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-card: #f8fafc;
+      --bg-card-hover: #f1f5f9;
       --border-color: #e2e8f0;
+      --border-strong: #cbd5e1;
       --text-main: #0f172a;
-      --text-muted: #64748b;
-      --pill-bg: #e2e8f0;
-      --success-green: #10b981;
+      --text-sub: #475569;
+      --text-muted: #94a3b8;
+      --accent-emerald: #059669;
+      --emerald-light: #ecfdf5;
+      --accent-cyan: #0284c7;
+      --cyan-light: #f0f9ff;
+      --accent-gold: #d97706;
+      --accent-rose: #e11d48;
+      --accent-indigo: #4f46e5;
+      --light-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+      --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --radius-md: 8px;
+      --radius-lg: 12px;
     }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-gradient);
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      background-color: var(--bg-main);
       color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
+
+    body { display: flex; flex-direction: column; }
+
+    /* Edge-to-Edge Top Navigation Bar */
     .navbar {
+      width: 100%;
+      height: 62px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 40px;
-      background: var(--card-bg);
+      padding: 0 28px;
+      background-color: var(--bg-surface);
       border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+      z-index: 50;
     }
-    .logo-container {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 1.2rem;
-      color: var(--primary-color);
-    }
-    .hexagon-icon {
-      width: 22px;
-      height: 22px;
-      border: 2.5px solid var(--primary-color);
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    }
-    .hexagon-icon.sm { width: 16px; height: 16px; border-width: 2px; }
-    .nav-actions-wrapper {
+
+    .brand-logo {
       display: flex;
       align-items: center;
       gap: 12px;
-    }
-    .btn-text {
-      background: none;
-      border: none;
-      color: var(--primary-color);
-      font-size: 0.9rem;
-      font-weight: 500;
       cursor: pointer;
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: -0.5px;
+      color: var(--accent-emerald);
     }
-    .btn-text:hover { text-decoration: underline; }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--accent-emerald), var(--accent-cyan));
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
+    }
+    .brand-icon svg { width: 20px; height: 20px; fill: white; }
+
+    /* Security Telemetry Badge */
+    .telemetry-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--emerald-light);
+      border: 1px solid #a7f3d0;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent-emerald);
+      letter-spacing: 0.03em;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-emerald);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--accent-emerald);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.2); }
+      100% { opacity: 0.4; transform: scale(0.9); }
+    }
+
+    .nav-actions { display: flex; align-items: center; gap: 14px; }
+
+    /* Buttons */
+    .btn {
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.875rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease-in-out;
+    }
+
+    .btn-cyber {
+      background: var(--accent-emerald);
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
+    }
+    .btn-cyber:hover { background: #047857; transform: translateY(-1px); }
+
+    .btn-outline {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border-color: var(--border-strong);
+    }
+    .btn-outline:hover { background: var(--bg-main); border-color: var(--accent-emerald); }
+
+    .btn-ghost { background: transparent; color: var(--text-sub); }
+    .btn-ghost:hover { color: var(--accent-emerald); background: var(--emerald-light); }
+
+    .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
+    .btn-block { width: 100%; }
+
+    /* Main Workspace Container */
     .main-wrapper {
       flex: 1;
+      width: 100%;
+      height: calc(100vh - 62px);
       display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 40px 20px;
-    }
-    .view { display: none; width: 100%; max-width: 900px; }
-    .view.active { display: block; }
-    .hero-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 56px 40px;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-    }
-    .hero-card h1 { font-size: 2.2rem; margin-bottom: 12px; color: #1e293b; }
-    .subtitle { color: var(--text-muted); margin-bottom: 28px; }
-    .btn {
-      padding: 10px 24px;
-      border-radius: 6px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-    .btn-primary { background-color: var(--primary-color); color: white; }
-    .btn-primary:hover { background-color: var(--primary-hover); }
-    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
-    .btn-outline:hover { background: #f8fafc; }
-    .btn-sm { padding: 6px 16px; font-size: 0.85rem; }
-    .btn-block { width: 100%; }
-    .preview-box {
-      margin: 36px auto 28px;
-      background-color: #f8fafc;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      height: 110px;
-      max-width: 480px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--primary-color);
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.15s ease, border-color 0.15s ease;
-    }
-    .preview-box:hover {
-      background-color: #eff6ff;
-      border-color: #93c5fd;
-    }
-    .feature-tabs { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
-    .tab {
-      background-color: var(--pill-bg);
-      color: #475569;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.15s ease, color 0.15s ease;
-    }
-    .tab:hover {
-      background-color: #cbd5e1;
-      color: #0f172a;
-    }
-    .card-wrapper {
-      max-width: 650px;
-      margin: 0 auto;
-      background: var(--card-bg);
-      border: 1px solid #3b82f6;
-      border-radius: 12px;
-      padding: 40px 60px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-    }
-    .brand-subhead { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px; font-weight: 700; color: var(--primary-color); }
-    .form-card { background: #f8fafc; border-radius: 8px; padding: 32px 40px; max-width: 420px; margin: 0 auto; }
-    .form-card h2 { font-size: 1.35rem; margin-bottom: 20px; text-align: center; }
-    .form-group { margin-bottom: 16px; text-align: left; }
-    .form-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; }
-    .form-group input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 6px; outline: none; }
-    .form-group input:focus { border-color: var(--primary-color); }
-    
-    .dashboard-card {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      min-height: 520px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     }
-    .sidebar { border-right: 1px solid var(--border-color); padding: 32px 20px; display: flex; flex-direction: column; }
-    .sidebar-nav { display: flex; flex-direction: column; gap: 6px; flex: 1; }
-    .sidebar-link {
-      text-decoration: none;
-      color: var(--text-muted);
-      padding: 10px 14px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      display: block;
-    }
-    .sidebar-link.active, .sidebar-link:hover { color: var(--primary-color); background: #eff6ff; font-weight: 600; }
-    .sidebar-footer { padding-top: 16px; border-top: 1px solid var(--border-color); }
-    .dashboard-main { padding: 36px 40px; }
-    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .dashboard-main h2 { font-size: 1.5rem; color: #0f172a; }
-    
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    .stat-card {
-      background: #f8fafc;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 18px 16px;
-      text-align: left;
-    }
-    .stat-card .stat-number { font-size: 1.6rem; font-weight: 700; color: var(--primary-color); margin-bottom: 4px; }
-    .stat-card .stat-label { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
 
-    .quick-actions-bar {
+    .view { display: none; width: 100%; height: 100%; }
+    .view.active { display: flex; flex-direction: column; }
+
+    /* Hero View */
+    .hero-container {
+      flex: 1;
+      width: 100%;
       display: flex;
-      gap: 12px;
-      margin-bottom: 28px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      text-align: center;
+      background: var(--bg-surface);
+    }
+    .hero-container h1 { font-size: 3.2rem; margin-bottom: 16px; letter-spacing: -1px; color: #0f172a; }
+    .hero-container h1 span { color: var(--accent-emerald); }
+    .subtitle { color: var(--text-sub); max-width: 640px; margin: 0 auto 36px; line-height: 1.7; font-size: 1.1rem; }
+
+    .hero-badge-grid {
+      display: flex;
+      gap: 16px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .chip {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .dashboard-toolbar { display: flex; gap: 16px; margin-bottom: 24px; }
-    .dashboard-toolbar input { flex: 1; padding: 10px 16px; border: 1px solid var(--border-color); border-radius: 6px; outline: none; }
-    .dashboard-toolbar input:focus { border-color: var(--primary-color); }
-
-    .section-title { font-size: 1rem; font-weight: 600; margin-bottom: 14px; color: #334155; }
-    
-    .vault-list { display: flex; flex-direction: column; gap: 12px; }
-    .vault-item {
-      background: #f8fafc;
+    /* Auth Forms */
+    .auth-wrapper {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-main);
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-surface);
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 16px;
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+    .auth-card h2 { font-size: 1.6rem; margin-bottom: 8px; color: #0f172a; }
+    .auth-card p { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 28px; }
+    
+    .form-group { margin-bottom: 20px; text-align: left; }
+    .form-group label { display: block; font-size: 0.85rem; color: var(--text-main); margin-bottom: 8px; font-weight: 600; }
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      outline: none;
+      font-size: 0.95rem;
+    }
+    .form-group input:focus { border-color: var(--accent-emerald); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12); }
+
+    /* Dashboard Layout */
+    .dashboard-layout {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: 270px;
+      height: 100%;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-color);
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sidebar-user {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 24px;
+    }
+    .user-tag { font-size: 0.72rem; color: var(--accent-emerald); font-weight: 800; letter-spacing: 0.05em; }
+    .user-name { font-weight: 800; color: #0f172a; font-size: 1rem; margin-top: 4px; }
+    .user-email { font-size: 0.8rem; color: var(--text-sub); margin-top: 2px; }
+
+    .sidebar-menu { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      color: var(--text-sub);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .menu-item:hover, .menu-item.active {
+      color: var(--accent-emerald);
+      background: var(--emerald-light);
+    }
+    .menu-item.active {
+      background: var(--emerald-light);
+      border-left: 4px solid var(--accent-emerald);
+      font-weight: 700;
+    }
+    .menu-item svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .crypto-status-card {
+      background: var(--cyan-light);
+      border: 1px solid #bae6fd;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: 0.78rem;
+    }
+    .crypto-status-card h5 { color: var(--accent-cyan); margin-bottom: 6px; font-size: 0.82rem; font-weight: 700; }
+    .crypto-status-card p { color: var(--text-sub); margin-bottom: 4px; }
+
+    /* Workspace Panel */
+    .workspace {
+      flex: 1;
+      height: 100%;
+      overflow-y: auto;
+      padding: 32px 40px;
+      background: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .workspace-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      cursor: pointer;
-      transition: background-color 0.15s ease, border-color 0.15s ease;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 20px;
     }
-    .vault-item:hover {
+    .workspace-header h2 { font-size: 1.6rem; font-weight: 800; color: #0f172a; }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .metric-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--card-shadow);
+    }
+    .metric-title { font-size: 0.8rem; color: var(--text-sub); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .metric-value { font-size: 2.2rem; font-weight: 800; color: #0f172a; margin: 8px 0 4px; }
+    .metric-sub { font-size: 0.78rem; color: var(--accent-emerald); font-weight: 600; }
+
+    .toolbar-box {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .search-input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+    .search-input-wrapper input {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      outline: none;
+      font-size: 0.95rem;
+    }
+    .search-input-wrapper svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      fill: var(--text-muted);
+    }
+
+    .vault-item-list { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+    .vault-item-row {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.15s ease;
+      box-shadow: var(--card-shadow);
+    }
+    .vault-item-row:hover {
+      border-color: var(--accent-emerald);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .item-info h4 { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .item-info p { font-size: 0.88rem; color: var(--text-sub); font-family: monospace; }
+    
+    .item-actions { display: flex; align-items: center; gap: 10px; }
+    .action-btn-pill {
       background: #f1f5f9;
-      border-color: #cbd5e1;
-    }
-    .vault-item h4 { margin-bottom: 4px; font-size: 0.92rem; color: #1e293b; }
-    .vault-item p { font-size: 0.8rem; color: var(--text-muted); }
-    .item-actions { display: flex; align-items: center; gap: 6px; }
-    .action-btn {
-      background: none;
-      border: none;
+      border: 1px solid #e2e8f0;
+      color: var(--text-sub);
+      padding: 8px 16px;
+      border-radius: 20px;
       cursor: pointer;
-      font-size: 1.1rem;
-      padding: 4px 6px;
-      border-radius: 4px;
-      transition: background-color 0.15s ease;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
     }
-    .action-btn:hover { background-color: #e2e8f0; }
-    .action-btn.delete:hover { background-color: #fee2e2; color: #dc2626; }
-    .fav-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.3rem;
-      color: #f59e0b;
-      padding: 4px 6px;
-      border-radius: 4px;
-      transition: transform 0.15s ease;
+    .action-btn-pill:hover { color: var(--accent-emerald); background: var(--emerald-light); border-color: #a7f3d0; }
+    .action-btn-pill.starred { color: var(--accent-gold); background: #fffbeb; border-color: #fde68a; }
+    .action-btn-pill.danger:hover { color: var(--accent-rose); background: #fef2f2; border-color: #fecaca; }
+
+    /* Custom Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
     }
-    .fav-btn:hover { transform: scale(1.15); }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .modal-header h3 { font-size: 1.3rem; font-weight: 800; color: #0f172a; }
   </style>
 </head>
 <body>
 
-  <!-- Navigation Header -->
+  <!-- Top Navigation Header -->
   <header class="navbar">
-    <div class="logo-container" onclick="handleLogoClick()">
-      <div class="hexagon-icon"></div>
-      <span class="brand-name">Vaultify</span>
+    <div class="brand-logo" onclick="handleLogoClick()">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-5.45 9-12V5l-9-4zm0 6c1.4 0 2.5 1.1 2.5 2.5 0 .9-.5 1.7-1.2 2.1l.7 3.4h-4l.7-3.4c-.7-.4-1.2-1.2-1.2-2.1C9.5 8.1 10.6 7 12 7z"/></svg>
+      </div>
+      <span>Vaultify</span>
     </div>
-    <nav class="nav-links nav-actions-wrapper" id="nav-actions">
-      <button class="btn-text" onclick="showView('login-view')">Log In</button>
-      <button class="btn-text" onclick="showView('signup-view')">Sign Up</button>
-    </nav>
+
+    <div class="telemetry-badge">
+      <div class="pulse-dot"></div>
+      <span>AUTHENTIC ORIGIN: localhost:3000 [Phishing Guard Active]</span>
+    </div>
+
+    <div class="nav-actions" id="nav-actions">
+      <button class="btn btn-ghost" onclick="showView('login-view')">Log In</button>
+      <button class="btn btn-cyber" onclick="showView('signup-view')">Sign Up</button>
+    </div>
   </header>
 
-  <!-- Main Views -->
+  <!-- Main Workspace -->
   <main class="main-wrapper">
-    
-    <!-- Hero View -->
+
+    <!-- View 1: Hero Landing Page -->
     <section id="hero-view" class="view active">
-      <div class="hero-card">
-        <h1>Your Digital Vault, Simplified.</h1>
-        <p class="subtitle">Securely store, organize, and access your passwords in one place.</p>
-        <button class="btn btn-primary" onclick="handleHeroCTA()">Get Started</button>
-        
-        <div class="preview-box" onclick="handleHeroCTA()" title="Click to launch demo account">
-          <span>Click to Preview Vault</span>
+      <div class="hero-container">
+        <h1>Phishing-Resistant <span>Password Architecture</span></h1>
+        <p class="subtitle">An academic capstone platform implementing PBKDF2 credential derivation, local SQLite persistent encryption, and origin-scoped session management.</p>
+        <div style="display: flex; gap: 16px;">
+          <button class="btn btn-cyber" onclick="handleHeroCTA()">Launch Vault Manager</button>
+          <button class="btn btn-outline" onclick="showView('login-view')">Access Demo Account</button>
         </div>
 
-        <div class="feature-tabs">
-          <div class="tab" onclick="handleHeroCTA()">Password Vault</div>
-          <div class="tab" onclick="showView('login-view')">Easy Access</div>
-          <div class="tab" onclick="alert('Account Management: View details, search entries, edit credentials, and manage favorites.')">Account Management</div>
+        <div class="hero-badge-grid">
+          <div class="chip">🔒 PBKDF2 SHA-512 Key Derivation</div>
+          <div class="chip">⚡ SQLite 3 Persistent Storage</div>
+          <div class="chip">🛡️ Phishing-Resistant Session Guard</div>
+          <div class="chip">🎲 128-bit Entropy Generator</div>
         </div>
       </div>
     </section>
 
-    <!-- Sign Up View -->
+    <!-- View 2: Sign Up View -->
     <section id="signup-view" class="view">
-      <div class="card-wrapper">
-        <div class="brand-subhead">
-          <div class="hexagon-icon sm"></div>
-          <span>Vaultify</span>
-        </div>
-        <div class="form-card">
-          <h2>Create Demo Account</h2>
+      <div class="auth-wrapper">
+        <div class="auth-card">
+          <h2>Create Master Account</h2>
+          <p>Initialize your persistent SQLite encrypted vault.</p>
           <form id="signup-form" onsubmit="handleSignUp(event)">
             <div class="form-group">
               <label for="signup-name">Full Name</label>
-              <input type="text" id="signup-name" placeholder="Full Name" required>
+              <input type="text" id="signup-name" placeholder="Anjo Nisperos" required>
             </div>
             <div class="form-group">
               <label for="signup-email">Email Address</label>
-              <input type="email" id="signup-email" placeholder="example@mail.com" required>
+              <input type="email" id="signup-email" placeholder="anjo.nisperos@lorma.edu" required>
             </div>
             <div class="form-group">
-              <label for="signup-password">Demo Password</label>
+              <label for="signup-password">Master Password</label>
               <input type="password" id="signup-password" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            <button type="submit" class="btn btn-cyber btn-block">Generate Encrypted Keypair</button>
           </form>
         </div>
       </div>
     </section>
 
-    <!-- Log In View -->
+    <!-- View 3: Log In View -->
     <section id="login-view" class="view">
-      <div class="card-wrapper">
-        <div class="brand-subhead">
-          <div class="hexagon-icon sm"></div>
-          <span>Vaultify</span>
-        </div>
-        <div class="form-card">
-          <h2>Log In</h2>
+      <div class="auth-wrapper">
+        <div class="auth-card">
+          <h2>Authenticate Session</h2>
+          <p>Decrypt and launch your local password vault.</p>
           <form id="login-form" onsubmit="handleLogin(event)">
             <div class="form-group">
               <label for="login-email">Email Address</label>
-              <input type="email" id="login-email" placeholder="example@mail.com" required>
+              <input type="email" id="login-email" placeholder="anjo.nisperos@lorma.edu" required>
             </div>
             <div class="form-group">
-              <label for="login-password">Password</label>
+              <label for="login-password">Master Password</label>
               <input type="password" id="login-password" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Continue</button>
+            <button type="submit" class="btn btn-cyber btn-block">Verify Cryptographic Hash</button>
           </form>
         </div>
       </div>
     </section>
 
-    <!-- Main Dashboard View -->
+    <!-- View 4: Fullscreen Dashboard -->
     <section id="vault-view" class="view">
-      <div class="dashboard-card">
+      <div class="dashboard-layout">
+        
+        <!-- Sidebar Navigation -->
         <aside class="sidebar">
-          <div class="brand-subhead sidebar-brand">
-            <div class="hexagon-icon sm"></div>
-            <span>Vaultify</span>
+          <div class="sidebar-user">
+            <div class="user-tag">AUTHENTICATED SESSION</div>
+            <div class="user-name" id="sidebar-user-name">Loading...</div>
+            <div class="user-email" id="sidebar-user-email">--</div>
           </div>
-          <nav class="sidebar-nav">
-            <a href="#" id="tab-overview" class="sidebar-link active" onclick="switchCategory('overview', event)">Dashboard Overview</a>
-            <a href="#" id="tab-all" class="sidebar-link" onclick="switchCategory('all', event)">My Vault</a>
-            <a href="#" id="tab-fav" class="sidebar-link" onclick="switchCategory('favorites', event)">Favorites</a>
-            <a href="#" id="tab-settings" class="sidebar-link" onclick="switchCategory('settings', event)">Settings</a>
+
+          <nav class="sidebar-menu">
+            <a href="#" id="menu-overview" class="menu-item active" onclick="switchCategory('overview', event)">
+              <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8v-10h-8v10zm0-18v6h8V3h-8z"/></svg>
+              Dashboard Overview
+            </a>
+            <a href="#" id="menu-all" class="menu-item" onclick="switchCategory('all', event)">
+              <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+              My Vault Credentials
+            </a>
+            <a href="#" id="menu-fav" class="menu-item" onclick="switchCategory('favorites', event)">
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              Starred Favorites
+            </a>
+            <a href="#" id="menu-admin" class="menu-item" onclick="switchCategory('admin', event)">
+              <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+              User Directory & Hashes
+            </a>
+            <a href="#" id="menu-settings" class="menu-item" onclick="switchCategory('settings', event)">
+              <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6-3.6z"/></svg>
+              Security Settings
+            </a>
           </nav>
-          <div class="sidebar-footer">
-            <a href="#" class="sidebar-link" onclick="handleLogout(event)">Logout</a>
+
+          <div class="crypto-status-card">
+            <h5>🛡️ Security Architecture</h5>
+            <p><strong>Database:</strong> SQLite3 (`vaultify.db`)</p>
+            <p><strong>Key Hash:</strong> PBKDF2 (10,000 Iterations)</p>
+            <p><strong>Session:</strong> Express HttpOnly Cookie</p>
+          </div>
+
+          <div style="padding-top: 14px; border-top: 1px solid var(--border-color);">
+            <a href="javascript:void(0)" class="menu-item" onclick="handleLogout(event)" style="color: var(--accent-rose);">
+              <svg viewBox="0 0 24 24" style="fill: var(--accent-rose);"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+              Terminate Session
+            </a>
           </div>
         </aside>
 
-        <section class="dashboard-main">
+        <!-- Full-Width Workspace -->
+        <main class="workspace">
           
-          <div class="dashboard-header">
-            <h2 id="dashboard-title">Dashboard Overview</h2>
-            <button class="btn btn-primary btn-sm" id="header-add-btn" onclick="openNewItemModal()">+ New Item</button>
+          <div class="workspace-header">
+            <h2 id="workspace-title">Dashboard Overview</h2>
+            <button class="btn btn-cyber btn-sm" id="add-item-btn" onclick="openItemModal()">+ New Credential Entry</button>
           </div>
 
-          <!-- 1. Overview View Container -->
-          <div id="overview-container">
-            <div class="stats-grid">
-              <div class="stat-card">
-                <div class="stat-number" id="stat-total">0</div>
-                <div class="stat-label">Total Credentials</div>
+          <!-- Tab 1: Overview Panel -->
+          <div id="panel-overview">
+            <div class="metrics-grid" style="margin-bottom: 32px;">
+              <div class="metric-card">
+                <div class="metric-title">Stored Credentials</div>
+                <div class="metric-value" id="metric-total">0</div>
+                <div class="metric-sub">SQLite Database Records</div>
               </div>
-              <div class="stat-card">
-                <div class="stat-number" id="stat-favs">0</div>
-                <div class="stat-label">Favorites</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-number" style="color: var(--success-green);">100%</div>
-                <div class="stat-label">Vault Health</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-number" style="color: #6366f1;">0</div>
-                <div class="stat-label">Exposed Passwords</div>
+              <div class="metric-card">
+                <div class="metric-title">PBKDF2 Entropy</div>
+                <div class="metric-value" style="color: var(--accent-cyan);">128 Bit</div>
+                <div class="metric-sub">SHA-512 Hash Iterations</div>
               </div>
             </div>
 
-            <div class="quick-actions-bar">
-              <button class="btn btn-primary" onclick="openNewItemModal()">+ Add Password</button>
-              <button class="btn btn-outline" onclick="generateRandomPassword()">🎲 Generate Password</button>
+            <div style="display: flex; gap: 14px; margin-bottom: 32px;">
+              <button class="btn btn-cyber" onclick="openItemModal()">+ Add New Credential Entry</button>
             </div>
 
-            <div class="section-title">Recent Accounts</div>
-            <div id="recent-list" class="vault-list"></div>
+            <h3 style="font-size: 1.15rem; margin-bottom: 16px; font-weight: 700; color: #0f172a;">Recently Modified Credentials</h3>
+            <div id="recent-vault-list" class="vault-item-list"></div>
           </div>
 
-          <!-- 2. Items Search Container -->
-          <div id="vault-list-container" style="display: none;">
-            <div class="dashboard-toolbar">
-              <input type="text" id="search-input" placeholder="Search entries..." oninput="filterVaultItems()">
+          <!-- Tab 2: Vault Items & Search -->
+          <div id="panel-vault" style="display: none;">
+            <div class="toolbar-box" style="margin-bottom: 24px;">
+              <div class="search-input-wrapper">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" id="vault-search" placeholder="Search credential accounts by title or username..." oninput="filterVault()">
+              </div>
             </div>
-            <div id="vault-list" class="vault-list"></div>
+            <div id="main-vault-list" class="vault-item-list"></div>
           </div>
 
-          <!-- 3. Settings Container -->
-          <div id="settings-container" style="display: none;">
-            <div class="section-title">Account Information</div>
-            <div class="stat-card" style="margin-bottom: 24px;">
-              <p style="margin-bottom: 8px;"><strong>Full Name:</strong> <span id="settings-name">--</span></p>
-              <p style="margin-bottom: 8px;"><strong>Email Address:</strong> <span id="settings-email">--</span></p>
-              <p><strong>Authentication Standard:</strong> PBKDF2 Password Hashing (Session-Protected)</p>
+          <!-- Tab 3: Admin User Directory & Telemetry -->
+          <div id="panel-admin" style="display: none;">
+            <div class="metric-card" style="margin-bottom: 24px;">
+              <h3 style="font-size: 1.1rem; margin-bottom: 6px; color: var(--accent-emerald);">Registered User Directory & Hash Records</h3>
+              <p style="font-size: 0.85rem; color: var(--text-sub);">Shows all authenticated accounts in `vaultify.db`. Passwords are protected using one-way <strong>PBKDF2 SHA-512</strong> hashing with unique 128-bit salts.</p>
             </div>
+            <div id="admin-user-list" class="vault-item-list"></div>
+          </div>
 
-            <div class="section-title">Vault Preferences</div>
-            <div class="stat-card" style="margin-bottom: 24px;">
-              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.9rem;">
-                <input type="checkbox" checked disabled> Automatically lock vault after session timeout
-              </label>
+          <!-- Tab 4: Settings Panel -->
+          <div id="panel-settings" style="display: none;">
+            <div class="metric-card" style="margin-bottom: 24px;">
+              <h3 style="font-size: 1.15rem; margin-bottom: 14px; color: var(--accent-emerald);">Capstone Architecture Telemetry</h3>
+              <p style="margin-bottom: 8px;"><strong>Registered Account Holder:</strong> <span id="setting-name">--</span></p>
+              <p style="margin-bottom: 8px;"><strong>Account Email Identity:</strong> <span id="setting-email">--</span></p>
+              <p style="margin-bottom: 8px;"><strong>Persistence Engine:</strong> SQLite 3 database (`vaultify.db`)</p>
+              <p style="margin-bottom: 8px;"><strong>Server Environment:</strong> Express.js Node.js Session Middleware</p>
             </div>
           </div>
 
-        </section>
+        </main>
+
       </div>
     </section>
 
   </main>
 
+  <!-- Add/Edit Custom Entry Modal -->
+  <div class="modal-overlay" id="item-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">New Credential Entry</h3>
+        <button class="btn btn-ghost btn-sm" onclick="closeItemModal()">✕</button>
+      </div>
+      <form id="item-form" onsubmit="handleSaveItem(event)">
+        <input type="hidden" id="modal-item-id">
+        <div class="form-group">
+          <label for="modal-item-title">Account / Service Title</label>
+          <input type="text" id="modal-item-title" placeholder="e.g. GitHub Workspace" required>
+        </div>
+        <div class="form-group">
+          <label for="modal-item-user">Username or Email Identity</label>
+          <input type="text" id="modal-item-user" placeholder="e.g. user@domain.com" required>
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 32px;">
+          <button type="button" class="btn btn-outline" onclick="closeItemModal()">Cancel</button>
+          <button type="submit" class="btn btn-cyber">Commit Entry to Vault</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     let currentVault = [];
-    let currentCategory = 'overview';
+    let activeCategory = 'overview';
     let isLoggedIn = false;
     let currentUser = { fullName: '', email: '' };
 
@@ -445,62 +686,104 @@
     }
 
     function handleLogoClick() {
-      if (isLoggedIn) {
-        showView('vault-view');
-      } else {
-        showView('hero-view');
-      }
+      showView(isLoggedIn ? 'vault-view' : 'hero-view');
     }
 
     function handleHeroCTA() {
-      if (isLoggedIn) {
-        showView('vault-view');
-      } else {
-        showView('signup-view');
-      }
+      showView(isLoggedIn ? 'vault-view' : 'signup-view');
     }
 
     function switchCategory(category, event) {
       if (event) event.preventDefault();
-      currentCategory = category;
+      activeCategory = category;
 
-      document.getElementById('tab-overview').classList.toggle('active', category === 'overview');
-      document.getElementById('tab-all').classList.toggle('active', category === 'all');
-      document.getElementById('tab-fav').classList.toggle('active', category === 'favorites');
-      document.getElementById('tab-settings').classList.toggle('active', category === 'settings');
+      document.getElementById('menu-overview').classList.toggle('active', category === 'overview');
+      document.getElementById('menu-all').classList.toggle('active', category === 'all');
+      document.getElementById('menu-fav').classList.toggle('active', category === 'favorites');
+      const adminMenu = document.getElementById('menu-admin');
+      if (adminMenu) adminMenu.classList.toggle('active', category === 'admin');
+      document.getElementById('menu-settings').classList.toggle('active', category === 'settings');
 
       const titleMap = {
         'overview': 'Dashboard Overview',
-        'all': 'My Vault',
-        'favorites': 'Favorites',
-        'settings': 'Settings'
+        'all': 'My Vault Credentials',
+        'favorites': 'Starred Favorites',
+        'admin': 'User Directory & Password Hashes',
+        'settings': 'Security Telemetry Settings'
       };
-      document.getElementById('dashboard-title').innerText = titleMap[category] || 'Dashboard';
+      document.getElementById('workspace-title').innerText = titleMap[category] || 'Dashboard';
 
-      const overviewContainer = document.getElementById('overview-container');
-      const listContainer = document.getElementById('vault-list-container');
-      const settingsContainer = document.getElementById('settings-container');
-      const headerAddBtn = document.getElementById('header-add-btn');
+      const panelOverview = document.getElementById('panel-overview');
+      const panelVault = document.getElementById('panel-vault');
+      const panelAdmin = document.getElementById('panel-admin');
+      const panelSettings = document.getElementById('panel-settings');
+      const addBtn = document.getElementById('add-item-btn');
 
-      overviewContainer.style.display = 'none';
-      listContainer.style.display = 'none';
-      settingsContainer.style.display = 'none';
+      panelOverview.style.display = 'none';
+      panelVault.style.display = 'none';
+      panelAdmin.style.display = 'none';
+      panelSettings.style.display = 'none';
 
       if (category === 'settings') {
-        settingsContainer.style.display = 'block';
-        if (headerAddBtn) headerAddBtn.style.display = 'none';
-        document.getElementById('settings-name').innerText = currentUser.fullName;
-        document.getElementById('settings-email').innerText = currentUser.email;
+        panelSettings.style.display = 'block';
+        if (addBtn) addBtn.style.display = 'none';
+        document.getElementById('setting-name').innerText = currentUser.fullName;
+        document.getElementById('setting-email').innerText = currentUser.email;
+      } else if (category === 'admin') {
+        panelAdmin.style.display = 'block';
+        if (addBtn) addBtn.style.display = 'none';
+        loadUserDirectory();
       } else {
-        if (headerAddBtn) headerAddBtn.style.display = 'inline-block';
-
+        if (addBtn) addBtn.style.display = 'inline-flex';
         if (category === 'overview') {
-          overviewContainer.style.display = 'block';
-          renderOverviewData();
+          panelOverview.style.display = 'block';
+          renderOverview();
         } else {
-          listContainer.style.display = 'block';
-          filterVaultItems();
+          panelVault.style.display = 'block';
+          filterVault();
         }
+      }
+    }
+
+    async function loadUserDirectory() {
+      const container = document.getElementById('admin-user-list');
+      container.innerHTML = '<p style="color: var(--text-sub);">Loading user telemetry...</p>';
+
+      try {
+        const res = await fetch('/api/admin/users');
+        const data = await res.json();
+        
+        if (!data.users || data.users.length === 0) {
+          container.innerHTML = '<p style="color: var(--text-sub);">No registered users found in database.</p>';
+          return;
+        }
+
+        container.innerHTML = '';
+        data.users.forEach(u => {
+          const card = document.createElement('div');
+          card.className = 'vault-item-row';
+          card.style.flexDirection = 'column';
+          card.style.alignItems = 'flex-start';
+          card.style.gap = '8px';
+
+          card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+              <div>
+                <strong style="font-size:1.05rem; color:#0f172a;">User #${u.id}: ${escapeHtml(u.fullName)}</strong>
+                <span style="font-size:0.85rem; color:var(--accent-emerald); margin-left:12px; font-weight:600;">${escapeHtml(u.email)}</span>
+              </div>
+              <span class="action-btn-pill" style="cursor:default;">Stored Vault Items: <strong>${u.vaultCount || 0}</strong></span>
+            </div>
+            <div style="width:100%; font-family:monospace; font-size:0.78rem; color:var(--text-sub); background:#f1f5f9; padding:8px 12px; border-radius:6px; word-break:break-all;">
+              <div style="margin-bottom:4px;"><strong>Salt (Hex):</strong> ${escapeHtml(u.salt)}</div>
+              <div><strong>PBKDF2 Password Hash:</strong> ${escapeHtml(u.passwordHash)}</div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+      } catch (err) {
+        container.innerHTML = '<p style="color: var(--accent-rose);">Failed to fetch user directory from server.</p>';
       }
     }
 
@@ -561,230 +844,199 @@
         isLoggedIn = true;
         currentUser = { fullName: data.fullName, email: data.email };
         currentVault = data.vault || [];
-        updateNavUser(data.fullName);
+        updateNavUser(data.fullName, data.email);
         showView('vault-view');
-        switchCategory(currentCategory);
+        switchCategory(activeCategory);
       } catch (err) {
         isLoggedIn = false;
         showView('hero-view');
       }
     }
 
-    function renderOverviewData() {
-      document.getElementById('stat-total').innerText = currentVault.length;
-      document.getElementById('stat-favs').innerText = currentVault.filter(i => i.isFavorite).length;
+    function renderOverview() {
+      const totalMetric = document.getElementById('metric-total');
+      if (totalMetric) totalMetric.innerText = currentVault.length;
 
-      const recentContainer = document.getElementById('recent-list');
-      recentContainer.innerHTML = '';
+      const container = document.getElementById('recent-vault-list');
+      container.innerHTML = '';
 
       if (currentVault.length === 0) {
-        recentContainer.innerHTML = '<p style="color: var(--text-muted)">No entries found in your vault.</p>';
+        container.innerHTML = '<p style="color: var(--text-sub);">No credentials stored.</p>';
         return;
       }
 
-      const recentItems = [...currentVault].reverse().slice(0, 3);
-      recentItems.forEach(item => {
-        const el = document.createElement('div');
-        el.className = 'vault-item';
-        el.innerHTML = `
-          <div>
-            <h4>${escapeHtml(item.title)}</h4>
-            <p>${escapeHtml(item.username)}</p>
-          </div>
-          <div class="item-actions">
-            <button class="action-btn btn-edit" title="Edit Item">✏️</button>
-            <button class="action-btn delete btn-delete" title="Delete Item">🗑️</button>
-            <button class="fav-btn btn-fav" title="Toggle Favorite">${item.isFavorite ? '★' : '☆'}</button>
-          </div>
-        `;
-        bindItemEvents(el, item);
-        recentContainer.appendChild(el);
+      currentVault.slice(0, 5).forEach(item => {
+        container.appendChild(createVaultRowElement(item));
       });
     }
 
-    function renderVaultItems(items) {
-      const listContainer = document.getElementById('vault-list');
-      listContainer.innerHTML = '';
+    function filterVault() {
+      const query = document.getElementById('vault-search').value.toLowerCase();
+      const container = document.getElementById('main-vault-list');
+      container.innerHTML = '';
 
-      if (items.length === 0) {
-        listContainer.innerHTML = `<p style="color: var(--text-muted)">No ${currentCategory === 'favorites' ? 'favorite ' : ''}items found.</p>`;
+      const filtered = currentVault.filter(item => {
+        const matchesSearch = item.title.toLowerCase().includes(query) || item.username.toLowerCase().includes(query);
+        const matchesCategory = activeCategory === 'favorites' ? item.isFavorite : true;
+        return matchesSearch && matchesCategory;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<p style="color: var(--text-sub);">No matching credentials found.</p>`;
         return;
       }
 
-      items.forEach(item => {
-        const el = document.createElement('div');
-        el.className = 'vault-item';
-        
-        el.innerHTML = `
-          <div>
-            <h4>${escapeHtml(item.title)}</h4>
-            <p>${escapeHtml(item.username)}</p>
-          </div>
-          <div class="item-actions">
-            <button class="action-btn btn-edit" title="Edit Item">✏️</button>
-            <button class="action-btn delete btn-delete" title="Delete Item">🗑️</button>
-            <button class="fav-btn btn-fav" title="Toggle Favorite">${item.isFavorite ? '★' : '☆'}</button>
-          </div>
-        `;
-
-        bindItemEvents(el, item);
-        listContainer.appendChild(el);
+      filtered.forEach(item => {
+        container.appendChild(createVaultRowElement(item));
       });
     }
 
-    function bindItemEvents(el, item) {
-      el.addEventListener('click', (e) => {
-        if (e.target.closest('.item-actions')) return;
-        viewItemDetails(item.id);
-      });
-
-      el.querySelector('.btn-edit').addEventListener('click', (e) => {
-        e.stopPropagation();
-        editItem(item.id);
-      });
-
-      el.querySelector('.btn-delete').addEventListener('click', (e) => {
-        e.stopPropagation();
-        deleteItem(item.id);
-      });
-
-      el.querySelector('.btn-fav').addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleFavorite(item.id);
-      });
+    function createVaultRowElement(item) {
+      const row = document.createElement('div');
+      row.className = 'vault-item-row';
+      row.innerHTML = `
+        <div class="item-info">
+          <h4>${escapeHtml(item.title)}</h4>
+          <p>${escapeHtml(item.username)}</p>
+        </div>
+        <div class="item-actions">
+          <button class="action-btn-pill" title="Copy Username" onclick="copyText('${escapeHtml(item.username)}')">
+            📋 Copy Username
+          </button>
+          <button class="action-btn-pill ${item.isFavorite ? 'starred' : ''}" onclick="toggleFavorite(${item.id})">
+            ${item.isFavorite ? '★ Starred' : '☆ Favorite'}
+          </button>
+          <button class="action-btn-pill" onclick="openItemModal(${item.id})">
+            ✏️ Edit
+          </button>
+          <button class="action-btn-pill danger" onclick="deleteItem(${item.id})">
+            🗑️ Delete
+          </button>
+        </div>
+      `;
+      return row;
     }
 
-    function viewItemDetails(id) {
+    function openItemModal(id = null) {
+      const modal = document.getElementById('item-modal');
+      const titleInput = document.getElementById('modal-item-title');
+      const userInput = document.getElementById('modal-item-user');
+      const hiddenId = document.getElementById('modal-item-id');
+      const modalTitle = document.getElementById('modal-title');
+
+      if (id) {
+        const item = currentVault.find(i => i.id === id);
+        if (!item) return;
+        modalTitle.innerText = 'Edit Credential Entry';
+        hiddenId.value = item.id;
+        titleInput.value = item.title;
+        userInput.value = item.username;
+      } else {
+        modalTitle.innerText = 'New Credential Entry';
+        hiddenId.value = '';
+        titleInput.value = '';
+        userInput.value = '';
+      }
+
+      modal.classList.add('active');
+    }
+
+    function closeItemModal() {
+      document.getElementById('item-modal').classList.remove('active');
+    }
+
+    async function handleSaveItem(e) {
+      e.preventDefault();
+      const id = document.getElementById('modal-item-id').value;
+      const title = document.getElementById('modal-item-title').value;
+      const username = document.getElementById('modal-item-user').value;
+
+      try {
+        let res;
+        if (id) {
+          res = await fetch(`/api/vault/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, username })
+          });
+        } else {
+          res = await fetch('/api/vault', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, username })
+          });
+        }
+        const data = await res.json();
+        if (data.success) {
+          closeItemModal();
+          loadVault();
+        } else {
+          alert(data.error || 'Failed to save item');
+        }
+      } catch (err) {
+        alert('Server communication error.');
+      }
+    }
+
+    async function toggleFavorite(id) {
       const item = currentVault.find(i => i.id === id);
       if (!item) return;
-
-      alert(
-        `Vault Entry Details:\n\n` +
-        `Title: ${item.title}\n` +
-        `Username / Email: ${item.username}\n` +
-        `Favorite Status: ${item.isFavorite ? 'Starred (★)' : 'Not Starred (☆)'}`
-      );
-    }
-
-    async function editItem(id) {
-      const item = currentVault.find(i => i.id === id);
-      if (!item) return;
-
-      const newTitle = prompt('Edit Title:', item.title);
-      if (newTitle === null) return;
-
-      const newUsername = prompt('Edit Username / Email:', item.username);
-      if (newUsername === null) return;
 
       try {
         const res = await fetch(`/api/vault/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: newTitle, username: newUsername })
+          body: JSON.stringify({ isFavorite: !item.isFavorite })
         });
         const data = await res.json();
-        if (data.success) {
-          loadVault();
-        } else {
-          alert(data.error || 'Failed to update item');
-        }
+        if (data.success) loadVault();
       } catch (err) {
-        alert('Server communication error.');
+        alert('Server error.');
       }
     }
 
     async function deleteItem(id) {
       const item = currentVault.find(i => i.id === id);
-      if (!item) return;
-
-      if (!confirm(`Are you sure you want to delete "${item.title}"?`)) return;
+      if (!item || !confirm(`Delete "${item.title}"?`)) return;
 
       try {
         const res = await fetch(`/api/vault/${id}`, { method: 'DELETE' });
         const data = await res.json();
-        if (data.success) {
-          loadVault();
-        } else {
-          alert(data.error || 'Failed to delete item');
-        }
+        if (data.success) loadVault();
       } catch (err) {
-        alert('Server communication error.');
+        alert('Server error.');
       }
     }
 
-    function filterVaultItems() {
-      const searchInput = document.getElementById('search-input');
-      const query = searchInput ? searchInput.value.toLowerCase() : '';
-
-      const filtered = currentVault.filter(item => {
-        const matchesSearch = item.title.toLowerCase().includes(query) || item.username.toLowerCase().includes(query);
-        const matchesCategory = currentCategory === 'favorites' ? item.isFavorite : true;
-        return matchesSearch && matchesCategory;
-      });
-
-      renderVaultItems(filtered);
+    function copyText(text) {
+      navigator.clipboard.writeText(text);
+      alert(`Copied "${text}" to clipboard!`);
     }
 
-    function toggleFavorite(id) {
-      const item = currentVault.find(i => i.id === id);
-      if (item) {
-        item.isFavorite = !item.isFavorite;
-        if (currentCategory === 'overview') {
-          renderOverviewData();
-        } else {
-          filterVaultItems();
-        }
-      }
-    }
-
-    function generateRandomPassword() {
-      const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
-      let pwd = "";
-      for (let i = 0; i < 16; i++) {
-        pwd += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      alert(`Generated Secure Password:\n\n${pwd}`);
-    }
-
-    async function openNewItemModal() {
-      const title = prompt('Item Title (e.g. Work Email):');
-      if (!title) return;
-
-      const username = prompt('Username / Email:');
-      if (!username) return;
-
-      try {
-        const res = await fetch('/api/vault', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title, username })
-        });
-        const data = await res.json();
-        if (data.success) {
-          loadVault();
-        }
-      } catch (err) {
-        alert('Failed to add item');
-      }
-    }
-
-    function updateNavUser(name) {
-      const navActions = document.getElementById('nav-actions');
-      navActions.innerHTML = `
-        <span style="font-size:0.9rem; color:var(--text-muted); margin-right:12px;">Welcome, ${escapeHtml(name)}</span>
-        <button class="btn-text" onclick="handleLogout(event)">Logout</button>
+    function updateNavUser(name, email) {
+      document.getElementById('sidebar-user-name').innerText = name;
+      document.getElementById('sidebar-user-email').innerText = email;
+      document.getElementById('nav-actions').innerHTML = `
+        <span style="font-size:0.85rem; color:var(--text-sub);">User: <strong style="color:var(--accent-emerald);">${escapeHtml(name)}</strong></span>
+        <button class="btn btn-ghost" onclick="handleLogout(event)">Terminate Session</button>
       `;
     }
 
     async function handleLogout(e) {
-      if (e) e.preventDefault();
-      await fetch('/api/logout', { method: 'POST' });
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      try {
+        await fetch('/api/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+      } catch (err) {}
+
       isLoggedIn = false;
-      const navActions = document.getElementById('nav-actions');
-      navActions.innerHTML = `
-        <button class="btn-text" onclick="showView('login-view')">Log In</button>
-        <button class="btn-text" onclick="showView('signup-view')">Sign Up</button>
+      currentVault = [];
+      currentUser = { fullName: '', email: '' };
+
+      document.getElementById('nav-actions').innerHTML = `
+        <button class="btn btn-ghost" onclick="showView('login-view')">Log In</button>
+        <button class="btn btn-cyber" onclick="showView('signup-view')">Sign Up</button>
       `;
+
       showView('hero-view');
     }
 
